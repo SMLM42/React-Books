@@ -4,7 +4,7 @@ import React from "react";
 function Book(props) {
     return (
 
-        <div className="col-10 cont mb-4 p-4 card">
+        <div className="cont mb-5 p-1 card">
             <div>
                 <h3 className="text-justify mb-4">{props.title} <small>by {props.authors}</small></h3>
             </div>
@@ -15,7 +15,7 @@ function Book(props) {
                 </div>
             </div>
             <div className="mt-3">
-                <a className="btn btn-primary mr-2 pr-4 pl-4" target="blank" href={props.link}>Buy</a>
+                <a className="btn mr-2 pr-4 pl-4 btn-success" target="blank" href={props.link}>Google Books</a>
                 <props.Button />
             </div>
         </div>

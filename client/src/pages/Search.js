@@ -1,23 +1,32 @@
 import React, { Component } from "react";
 import Jumbotron from "../components/Jumbotron";
 import API from "../utils/API";
-import DeleteBtn from "../components/DeleteBtn";
 import SearchForm from "../components/SearchForm";
 import Card from "../components/Card";
-import { Col, Row, Container } from "../components/Grid";
-import { List, ListItem } from "../components/List";
-import { Input, TextArea, FormBtn } from "../components/Form";
+import { Col, Container } from "../components/Grid";
+import { List } from "../components/List";
+
 
 class Search extends Component {
   state = {
     books: [],
-    search: "",
+    // booksTest: [],
+    search: ""
   };
 
   searchBooks = () => {
     API.searchBooks()
-      .then(res => this.setState({ books: res.data }))
+      .then(res => this.setState({ books: res.data })
+      )
       .catch(err => console.log(err));
+    // console.log(this.state.books)
+    // let array = this.state.booksTest
+    // for (let i = 0; i < this.state.books; i++) {
+    //   if (array[i].volumeInfo.thumbnail === undefined) {
+    //     array.splice(i, 1), i--
+    //   }
+    // }
+    // this.setState({ books: array })
   };
 
   handleInputChange = event => {
@@ -29,20 +38,23 @@ class Search extends Component {
 
   handleFormSubmit = event => {
     event.preventDefault();
-    API.searchBook(this.state.search_term)
+    let search = this.state.search.trim().replace(" ", "_")
+    console.log(search)
+    API.searchBooks(search)
       .then(res => {
         if (!res.data.items) {
           alert("No Results")
         } else {
           this.setState({ books: res.data.items });
-          this.setState({ search_term: "" });
+          this.setState({ search: "" });
         }
       })
+      .catch(err => console.log(err));
   };
 
   handleBookSave = (book) => {
     let auths = book.volumeInfo.authors
-    let authors = book.volumeInfo.authors[0];
+    let authors = book.volumeInfo.authors[9];
     for (let index = 1; index < auths.length; index++) {
       authors += ":" + auths[index];
     }
@@ -81,19 +93,22 @@ class Search extends Component {
           <Jumbotron>
             <h1>Results</h1>
           </Jumbotron>
-          {this.state.books.map(book => (
-            <Card
-              key={book.id}
-              title={book.volumeInfo.title}
-              link={book.volumeInfo.infoLink}
-              authors={`${book.volumeInfo.authors}.`}
-              description={book.volumeInfo.description}
-              image={book.volumeInfo.imageLinks.thumbnail}
-              Button={() => (<button onClick={() => this.handleBookSave(book)}
-                className="btn btn-success ml-2 pr-4 pl-4">Save</button>)} />))}
-          {/* ) : (
+          {this.state.books.length ? (
+            <List>
+              {this.state.books.map(book => (
+                <Card
+                  key={book.id}
+                  title={book.volumeInfo.title}
+                  link={book.volumeInfo.infoLink}
+                  authors={`${book.volumeInfo.authors}.`}
+                  description={book.volumeInfo.description}
+                  image={(book.volumeInfo.imageLinks.thumbnail === undefined) ? ("../public.favicon.ico") : ((book.volumeInfo.imageLinks.smallThumbnail))}
+                  Button={() => (<button onClick={() => this.handleBookSave(book)}
+                    className="btn btn-primary ml-2 pr-4 pl-4">Save</button>)} />))}
+            </List>
+          ) : (
               <h3>No Results to Display</h3>
-          )} */}
+            )}
         </Col>
 
       </Container>

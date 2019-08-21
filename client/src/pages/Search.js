@@ -54,9 +54,9 @@ class Search extends Component {
 
   handleBookSave = (book) => {
     let auths = book.volumeInfo.authors
-    let authors = book.volumeInfo.authors[9];
-    for (let index = 1; index < auths.length; index++) {
-      authors += ":" + auths[index];
+    let authors = book.volumeInfo.authors[0];
+    for (let i = 1; i < auths.length; i++) {
+      authors += ":" + auths[i];
     }
 
     authors = `${authors.split(":").join(", ")}.`
@@ -73,7 +73,6 @@ class Search extends Component {
         alert(`"${book.volumeInfo.title}" added to list.`)
         this.setState({ books: this.state.books.filter(book => book.id !== res.data.id) })
       })
-      .catch(err => console.log(err));
   }
 
   render() {
